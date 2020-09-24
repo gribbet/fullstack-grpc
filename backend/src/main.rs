@@ -1,4 +1,7 @@
-use std::net::SocketAddr;
+use std::{
+    net::SocketAddr,
+    sync::{Arc, Mutex},
+};
 use tonic::{transport::Server, Request, Response, Status};
 
 use api::{
@@ -11,7 +14,9 @@ pub mod api {
 }
 
 #[derive(Debug, Default)]
-pub struct UserServiceImpl {}
+pub struct UserServiceImpl {
+    users: Arc<Mutex<Vec<User>>>,
+}
 
 #[tonic::async_trait]
 impl UserService for UserServiceImpl {
@@ -20,10 +25,15 @@ impl UserService for UserServiceImpl {
         request: Request<CreateUser>,
     ) -> Result<Response<User>, Status> {
         println!("Created");
-        Ok(Response::new(User {
-            id: 0,
+        let users = self.users.clone();
+        let mut users = users.lock().unwrap();
+        let id = users.iter().map(|user| user.id).max().unwrap_or(0) + 1;
+        let created = User {
+            id: id,
             name: request.into_inner().name,
-        }))
+        };
+        users.push(created.clone());
+        Ok(Response::new(created))
     }
 }
 
