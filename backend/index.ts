@@ -13,12 +13,18 @@ import {
 @Controller("user")
 @UserServiceControllerMethods()
 class UserController implements UserServiceController {
+  private users: User[] = [];
+
   create(user: CreateUser): User | Promise<User> | Observable<User> {
     console.log("Creating user", user);
-    return {
-      id: 0,
+    const id =
+      this.users.map((_) => _.id).reduce((a, b) => Math.max(a, b), 0) + 1;
+    const created: User = {
+      id,
       ...user,
     };
+    this.users.push(created);
+    return created;
   }
 }
 
