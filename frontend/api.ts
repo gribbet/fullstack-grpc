@@ -4,6 +4,9 @@ import { grpc } from '@improbable-eng/grpc-web';
 import { Writer, Reader } from 'protobufjs/minimal';
 
 
+export interface Empty {
+}
+
 export interface User {
   id: number;
   name: string;
@@ -12,6 +15,17 @@ export interface User {
 export interface CreateUser {
   name: string;
 }
+
+export interface DeleteUser {
+  id: number;
+}
+
+export interface Users {
+  users: User[];
+}
+
+const baseEmpty: object = {
+};
 
 const baseUser: object = {
   id: 0,
@@ -22,9 +36,20 @@ const baseCreateUser: object = {
   name: "",
 };
 
+const baseDeleteUser: object = {
+  id: 0,
+};
+
+const baseUsers: object = {
+};
+
 export interface UserService {
 
   Create(request: DeepPartial<CreateUser>, metadata?: grpc.Metadata): Promise<User>;
+
+  Delete(request: DeepPartial<DeleteUser>, metadata?: grpc.Metadata): Promise<Empty>;
+
+  List(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<Users>;
 
 }
 
@@ -38,6 +63,14 @@ export class UserServiceClientImpl implements UserService {
 
   Create(request: DeepPartial<CreateUser>, metadata?: grpc.Metadata): Promise<User> {
     return this.rpc.unary(UserServiceCreateDesc, CreateUser.fromPartial(request), metadata);
+  }
+
+  Delete(request: DeepPartial<DeleteUser>, metadata?: grpc.Metadata): Promise<Empty> {
+    return this.rpc.unary(UserServiceDeleteDesc, DeleteUser.fromPartial(request), metadata);
+  }
+
+  List(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<Users> {
+    return this.rpc.unary(UserServiceListDesc, Empty.fromPartial(request), metadata);
   }
 
 }
@@ -87,6 +120,38 @@ export class GrpcWebImpl implements Rpc {
   }
 
 }
+
+export const Empty = {
+  encode(_: Empty, writer: Writer = Writer.create()): Writer {
+    return writer;
+  },
+  decode(input: Uint8Array | Reader, length?: number): Empty {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseEmpty } as Empty;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+  fromJSON(_: any): Empty {
+    const message = { ...baseEmpty } as Empty;
+    return message;
+  },
+  fromPartial(_: DeepPartial<Empty>): Empty {
+    const message = { ...baseEmpty } as Empty;
+    return message;
+  },
+  toJSON(_: Empty): unknown {
+    const obj: any = {};
+    return obj;
+  },
+};
 
 export const User = {
   encode(message: User, writer: Writer = Writer.create()): Writer {
@@ -197,6 +262,109 @@ export const CreateUser = {
   },
 };
 
+export const DeleteUser = {
+  encode(message: DeleteUser, writer: Writer = Writer.create()): Writer {
+    writer.uint32(8).uint32(message.id);
+    return writer;
+  },
+  decode(input: Uint8Array | Reader, length?: number): DeleteUser {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDeleteUser } as DeleteUser;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+  fromJSON(object: any): DeleteUser {
+    const message = { ...baseDeleteUser } as DeleteUser;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+  fromPartial(object: DeepPartial<DeleteUser>): DeleteUser {
+    const message = { ...baseDeleteUser } as DeleteUser;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+  toJSON(message: DeleteUser): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+};
+
+export const Users = {
+  encode(message: Users, writer: Writer = Writer.create()): Writer {
+    for (const v of message.users) {
+      User.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+  decode(input: Uint8Array | Reader, length?: number): Users {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUsers } as Users;
+    message.users = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.users.push(User.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+  fromJSON(object: any): Users {
+    const message = { ...baseUsers } as Users;
+    message.users = [];
+    if (object.users !== undefined && object.users !== null) {
+      for (const e of object.users) {
+        message.users.push(User.fromJSON(e));
+      }
+    }
+    return message;
+  },
+  fromPartial(object: DeepPartial<Users>): Users {
+    const message = { ...baseUsers } as Users;
+    message.users = [];
+    if (object.users !== undefined && object.users !== null) {
+      for (const e of object.users) {
+        message.users.push(User.fromPartial(e));
+      }
+    }
+    return message;
+  },
+  toJSON(message: Users): unknown {
+    const obj: any = {};
+    if (message.users) {
+      obj.users = message.users.map(e => e ? User.toJSON(e) : undefined);
+    } else {
+      obj.users = [];
+    }
+    return obj;
+  },
+};
+
 const UserServiceDesc = {
   serviceName: "api.UserService",
 }
@@ -214,6 +382,42 @@ const UserServiceCreateDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary: function deserializeBinary(data: Uint8Array) {
       return { ...User.decode(data), toObject() { return this; } };
+    }
+    ,
+  } as any,
+}
+const UserServiceDeleteDesc: UnaryMethodDefinitionish = {
+  methodName: "Delete",
+  service: UserServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary: function serializeBinary() {
+      return DeleteUser.encode(this).finish();
+    }
+    ,
+  } as any,
+  responseType: {
+    deserializeBinary: function deserializeBinary(data: Uint8Array) {
+      return { ...Empty.decode(data), toObject() { return this; } };
+    }
+    ,
+  } as any,
+}
+const UserServiceListDesc: UnaryMethodDefinitionish = {
+  methodName: "List",
+  service: UserServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary: function serializeBinary() {
+      return Empty.encode(this).finish();
+    }
+    ,
+  } as any,
+  responseType: {
+    deserializeBinary: function deserializeBinary(data: Uint8Array) {
+      return { ...Users.decode(data), toObject() { return this; } };
     }
     ,
   } as any,

@@ -1,12 +1,14 @@
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { GrpcWebImpl, UserServiceClientImpl } from "./api";
+import { App } from "./App";
 
 const endpoint = process.env.ENDPOINT || "http://localhost:8080";
 const rpc = new GrpcWebImpl(endpoint, {});
-const userService = new UserServiceClientImpl(rpc);
+export const userService = new UserServiceClientImpl(rpc);
 
 async function main() {
-  const user = await userService.Create({ name: "Test user 1" });
-  console.log(user);
+  ReactDOM.render(React.createElement(App), document.getElementById("root"));
 }
 
 main();

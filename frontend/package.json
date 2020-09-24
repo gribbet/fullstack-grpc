@@ -4,6 +4,8 @@
   "main": "index.ts",
   "devDependencies": {
     "@types/node": "^14.11.2",
+    "@types/react": "^16.9.49",
+    "@types/react-dom": "^16.9.8",
     "parcel": "^1.12.4",
     "ts-proto": "^1.34.0",
     "typescript": "^4.0.2"
@@ -15,6 +17,8 @@
   },
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.13.0",
-    "browser-headers": "^0.4.1"
+    "browser-headers": "^0.4.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }

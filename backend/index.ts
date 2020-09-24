@@ -5,7 +5,10 @@ import { join } from "path";
 import { Observable } from "rxjs";
 import {
   CreateUser,
+  DeleteUser,
+  Empty,
   User,
+  Users,
   UserServiceController,
   UserServiceControllerMethods,
 } from "./api";
@@ -23,8 +26,20 @@ class UserController implements UserServiceController {
       id,
       ...user,
     };
-    this.users.push(created);
+    this.users = [created, ...this.users];
     return created;
+  }
+
+  list(_: Empty): Users | Promise<Users> | Observable<Users> {
+    const { users } = this;
+    return {
+      users,
+    };
+  }
+
+  delete({ id }: DeleteUser): Empty | Promise<Empty> | Observable<Empty> {
+    this.users = this.users.filter((_) => _.id !== id);
+    return {};
   }
 }
 
