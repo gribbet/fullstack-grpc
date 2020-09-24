@@ -9,4 +9,4 @@ COPY --from=build /go/bin/grpcwebproxy .
 ARG BACKEND
 ENV BACKEND=$BACKEND
 EXPOSE 8080
-ENTRYPOINT /grpcwebproxy --backend_addr=$BACKEND --allow_all_origins --use_websockets --run_tls_server=false
+CMD /grpcwebproxy --backend_addr=$BACKEND --allow_all_origins --use_websockets --run_tls_server=false

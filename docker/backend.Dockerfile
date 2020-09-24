@@ -1,27 +1,19 @@
-FROM rust:latest as build
+FROM node:alpine as build
 
-RUN rustup component add rustfmt
+RUN apk add protoc
 
-WORKDIR /app
+WORKDIR /app 
+
+COPY backend/package*.json backend/
+
+RUN cd backend && npm install
 
 COPY proto proto
-COPY backend/Cargo.toml backend/Cargo.lock backend/build.rs backend/
-
-RUN cd backend \
-    && mkdir src \
-    && echo "fn main() {}" > src/main.rs \
-    && cargo install --path .
-
 COPY backend backend
 
 RUN cd backend \
-    && cargo build --release \
-    && cargo install --path .
-
-FROM ubuntu
-
-COPY --from=build /usr/local/cargo/bin/backend /usr/local/bin/backend
+    && npm run generate \
+    && npm run build
 
 EXPOSE 50051
-
-ENTRYPOINT backend
+CMD node backend/index.js

@@ -1,8 +1,7 @@
 {
-  "name": "ts-proto-test",
+  "name": "frontend",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "main": "index.ts",
   "devDependencies": {
     "@types/node": "^14.11.2",
     "parcel": "^1.12.4",
