@@ -1,6 +1,7 @@
 import { GrpcWebImpl, UserServiceClientImpl } from "./api";
 
-const rpc = new GrpcWebImpl("http://localhost:8080", {});
+const endpoint = process.env.ENDPOINT || "http://localhost:8080";
+const rpc = new GrpcWebImpl(endpoint, {});
 const userService = new UserServiceClientImpl(rpc);
 
 async function main() {

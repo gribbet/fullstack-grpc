@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  backend:
+    image: backend
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    ports:
+      - 50051
+    init: true
+  proxy:
+    image: proxy
+    build:
+      context: ..
+      dockerfile: docker/proxy.Dockerfile
+      args:
+        - BACKEND=backend:50051
+    ports:
+      - "8080:8080"
+  frontend:
+    image: frontend
+    build:
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
+      args:
+        - PROXY=proxy:8080
+    ports:
+      - "3000:80"

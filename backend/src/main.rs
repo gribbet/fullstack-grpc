@@ -19,6 +19,7 @@ impl UserService for UserServiceImpl {
         &self,
         request: Request<CreateUser>,
     ) -> Result<Response<User>, Status> {
+        println!("Created");
         Ok(Response::new(User {
             id: 0,
             name: request.into_inner().name,
@@ -31,10 +32,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr: SocketAddr = "0.0.0.0:50051".parse()?;
     let user_service = UserServiceImpl::default();
 
+    println!("Starting at {}", addr);
+
     Server::builder()
         .add_service(UserServiceServer::new(user_service))
         .serve(addr)
         .await?;
+
+    println!("Shutdown");
 
     Ok(())
 }
