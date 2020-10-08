@@ -4,15 +4,15 @@ package api;
 
 service UserService {
   rpc Create (CreateUser) returns (User) {}
-  rpc Delete (DeleteUser) returns (Empty) {}
-  rpc List (Empty) returns (Users) {}
+  rpc Delete (Id) returns (Empty) {}
+  rpc List (Query) returns (Users) {}
 
 }
 
 message Empty {}
 
 message User {
-  uint32 id = 1;
+  string id = 1;
   string name = 2;
 }
 
@@ -20,8 +20,12 @@ message CreateUser {
   string name = 1;
 }
 
-message DeleteUser {
-  uint32 id = 1;
+message Query {
+  string name = 1;
+}
+
+message Id {
+  string id = 1;
 }
 
 message Users {

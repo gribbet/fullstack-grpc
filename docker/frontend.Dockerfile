@@ -11,6 +11,9 @@ RUN cd frontend && npm install
 COPY proto proto
 COPY frontend frontend
 
+ARG ENDPOINT
+ENV ENDPOINT=$ENDPOINT
+
 RUN cd frontend \
     && npm run generate \
     && npm run build

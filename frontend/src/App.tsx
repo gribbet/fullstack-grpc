@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FC, useCallback, useEffect, useState } from "react";
 import { userService } from ".";
-import { User } from "./api";
+import { User } from "./generated/api";
 
 const randomString = () => Math.random().toString(36).substr(2, 8);
 
@@ -18,7 +18,7 @@ export const App: FC = () => {
     update();
   }, []);
 
-  const onDelete = useCallback(async (id: number) => {
+  const onDelete = useCallback(async (id: string) => {
     await userService.Delete({ id });
     update();
   }, []);
@@ -37,7 +37,7 @@ export const App: FC = () => {
 
 interface UsersListProps {
   users: User[];
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 const UsersList: FC<UsersListProps> = ({ users, onDelete }: UsersListProps) => (
@@ -50,7 +50,7 @@ const UsersList: FC<UsersListProps> = ({ users, onDelete }: UsersListProps) => (
 
 interface UserRowProps {
   user: User;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
 }
 
 const UserRow: FC<UserRowProps> = ({ user, onDelete }: UserRowProps) => {

@@ -1,10 +1,16 @@
 version: "3.8"
 services:
+  postgres:
+    image: postgres
+    ports:
+      - 5432
   backend:
     image: backend
     build:
       context: ..
       dockerfile: docker/backend.Dockerfile
+      args:
+        - POSTGRES=postgres:5432
     ports:
       - 50051
     init: true
@@ -23,6 +29,6 @@ services:
       context: ..
       dockerfile: docker/frontend.Dockerfile
       args:
-        - ENDPOINT=proxy:8080
+        - ENDPOINT=http://localhost:8080
     ports:
       - "1234:80"

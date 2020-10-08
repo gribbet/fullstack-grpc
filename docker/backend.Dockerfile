@@ -15,5 +15,7 @@ RUN cd backend \
     && npm run generate \
     && npm run build
 
+ARG POSTGRES
+ENV POSTGRES=$POSTGRES
 EXPOSE 50051
-CMD node backend/index.js
+CMD cd backend && node ./build/index.js

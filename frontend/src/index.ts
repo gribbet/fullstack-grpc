@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { GrpcWebImpl, UserServiceClientImpl } from "./api";
 import { App } from "./App";
+import { GrpcWebImpl, UserServiceClientImpl } from "./generated/api";
 
 const endpoint = process.env.ENDPOINT || "http://localhost:8080";
 const rpc = new GrpcWebImpl(endpoint, {});
